@@ -14,7 +14,8 @@ Reader::Reader(QObject *parent) : QObject(parent)
     seperate_file.open(QIODevice::ReadOnly);
     QTextStream seperate_stream(&seperate_file);
     thread.seperate=seperate_stream.readAll();
-    read(qApp->arguments()[1]);
+    if(qApp->arguments().count()>1)
+        read(qApp->arguments()[1]);
 }
 
 Reader::~Reader()
