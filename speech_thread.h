@@ -3,8 +3,7 @@
 
 #include <QObject>
 #include <QThread>
-#include <sapi.h>
-#include <atlbase.h>
+#include <QAxObject>
 
 class Speech_Thread : public QThread
 {
@@ -12,9 +11,7 @@ class Speech_Thread : public QThread
 public:
     Speech_Thread();
     ~Speech_Thread();
-    ISpVoice *pSpVoice;
-    void init();
-    void uninit();
+    QAxObject speech;
     QString text,seperate;
     int position;
     bool running;

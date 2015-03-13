@@ -33,10 +33,15 @@ ApplicationWindow {
     FileDialog {
         id: open_dialog
         nameFilters: ["Text files (*.txt)", "All files (*)"]
-        title: qsTr("Please choose your text file")
+        title: qsTr("Please select your text file")
         onAccepted: {
             reader.read(fileUrl)
         }
+    }
+    FontDialog{
+        id: font_dialog
+        title: qsTr("Please select your font")
+        font.pointSize: 20
     }
     ColumnLayout {
         anchors.margins: 5
@@ -94,11 +99,17 @@ ApplicationWindow {
                     }
                 }
             }
+            Button {
+                text: qsTr("Font")
+                onClicked: {
+                    font_dialog.open()
+                }
+            }
             Label {
                 text: qsTr("Cursor:%1 ").arg(reader_txt.cursorPosition)
             }
             Label {
-                text: qsTr("Progress:%%1 ").arg((reader_txt.cursorPosition/reader_txt.text.length).toFixed(2))
+                text: qsTr("Progress:%%1 ").arg((reader_txt.cursorPosition/reader_txt.text.length*100).toFixed(2))
             }
         }
         RowLayout {
@@ -124,16 +135,6 @@ ApplicationWindow {
                 stepSize: 5
                 onValueChanged: reader.volume_change(value)
             }
-            Label {
-                text: qsTr("Size:%1").arg(size_slider.value)
-            }
-            Slider {
-                id: size_slider
-                value: 24
-                minimumValue: 10
-                maximumValue: 40
-                stepSize: 2
-            }
         }
         TextArea {
             id: reader_txt
@@ -143,9 +144,9 @@ ApplicationWindow {
             Layout.fillHeight: true
             Layout.fillWidth: true
             readOnly: true
-            selectByKeyboard: true
+            selectByKeyboard: false
             selectByMouse: false
-            font.pointSize: size_slider.value
+            font: font_dialog.font
             onCursorPositionChanged: reader.position_set(cursorPosition)
         }
     }

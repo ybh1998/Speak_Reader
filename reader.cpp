@@ -59,28 +59,32 @@ void Reader::position_set(int pos){
 }
 
 void Reader::read_start(){
-    thread.init();
-    thread.pSpVoice->SetRate(rate);
-    thread.pSpVoice->SetVolume(vol);
+    thread.speech.dynamicCall("SetRate(int)",rate);
+    thread.speech.dynamicCall("SetVolume(int)",vol);
+    //thread.speech.initialize();
     thread.start();
 }
 void Reader::read_stop(){
     if(thread.running){
         thread.terminate();
-        thread.uninit();
+        thread.running=false;
     }
 }
 void Reader::read_pause(){
-    if(thread.running) thread.pSpVoice->Pause();
+    if(thread.running)
+        thread.speech.dynamicCall("Pause()");
 }
 void Reader::read_resume(){
-    if(thread.running) thread.pSpVoice->Resume();
+    if(thread.running)
+        thread.speech.dynamicCall("Resume()");
 }
 void Reader::rate_change(int newrate){
     rate=newrate;
-    if(thread.running) thread.pSpVoice->SetRate(rate);
+    if(thread.running)
+        thread.speech.dynamicCall("SetRate(int)",rate);
 }
 void Reader::volume_change(int newvol){
     vol=newvol;
-    if(thread.running) thread.pSpVoice->SetVolume(vol);
+    if(thread.running)
+        thread.speech.dynamicCall("SetVolume(int)",vol);
 }
