@@ -5,6 +5,7 @@ Speech_Thread::Speech_Thread()
     position=0;
     running=false;
     speech.setControl("SAPI.SpVoice");
+    speech.dynamicCall("SetSyncSpeakTimeout(1000000000)");
 }
 
 Speech_Thread::~Speech_Thread()

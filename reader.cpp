@@ -15,39 +15,31 @@ Reader::Reader(QObject *parent) : QObject(parent)
     QTextStream seperate_stream(&seperate_file);
     thread.seperate=seperate_stream.readAll();
     if(qApp->arguments().count()>1)
-        read(qApp->arguments()[1]);
+        read(QUrl::fromLocalFile(qApp->arguments()[1]));
 }
 
 Reader::~Reader()
 {
 
 }
-
 void Reader::read(QString url){
+    read(QUrl(url));
+}
+
+void Reader::read(QUrl url){
     if(ini_file) delete ini_file;
-    ini_file=new QSettings(QUrl(url).toLocalFile().append(".ini"),
+    ini_file=new QSettings(url.toLocalFile().append(".ini"),
                            QSettings::IniFormat);
     position=ini_file->value("/Reader/position").toInt();
     QFile txt_file(QUrl(url).toLocalFile());
-    if(txt_file.open(QIODevice::ReadOnly)){
-        QTextStream txt_stream(&txt_file);
-        thread.text=txt_stream.readAll();
-        thread.text.replace(QRegExp("\n")," \n");
-        emit text_Changed(thread.text);
-        opened=true;
-        emit select_Changed(position,position);
-        return;
-    }
-    txt_file.setFileName(url);
-    if(txt_file.open(QIODevice::ReadOnly)){
-        QTextStream txt_stream(&txt_file);
-        thread.text=txt_stream.readAll();
-        thread.text.replace(QRegExp("\n")," \n");
-        emit text_Changed(thread.text);
-        opened=true;
-        emit select_Changed(position,position);
-        return;
-    }
+    txt_file.open(QIODevice::ReadOnly);
+    QTextStream txt_stream(&txt_file);
+    thread.text=txt_stream.readAll();
+    thread.text.replace(QRegExp("\n")," \n");
+    emit text_Changed(thread.text);
+    opened=true;
+    emit select_Changed(position,position);
+    return;
 }
 void Reader::position_save(){
     if(opened)

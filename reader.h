@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QSettings>
+#include <QUrl>
 #include "speech_thread.h"
 
 class Reader : public QObject
@@ -20,6 +21,7 @@ public:
         return thread.text;
     }
     Q_INVOKABLE void read(QString url);
+    void read(QUrl url);
     Q_INVOKABLE void position_save();
     Q_INVOKABLE void position_set(int pos);
     Q_INVOKABLE void read_start();
